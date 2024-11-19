@@ -1,26 +1,5 @@
 // app.js
 
-/*
-  Copyright (c) 2024 NiansuhAI
-
-  This software is provided under the terms of the Custom License. You may use, modify, and distribute the software under the following conditions:
-
-  1. **Use**: You may use the software for personal, educational, or commercial purposes as long as you comply with the terms of this license.
-  
-  2. **Modification**: You may modify the software for internal use only. You may not distribute the modified version to third parties.
-
-  3. **Redistribution**: You may not redistribute the software in any form, including modifications.
-
-  4. **Proprietary Nature**: This software remains the proprietary property of NiansuhAI. All rights not expressly granted are reserved.
-
-  5. **Warranty**: The software is provided "as-is", with no warranty of any kind, express or implied, including but not limited to the implied warranties of merchantability and fitness for a particular purpose.
-
-  For inquiries regarding commercial licensing, please contact: contact@typegpt.net
-
-  ---
-  © 2024 NiansuhAI. All rights reserved.
-*/
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
@@ -88,6 +67,28 @@ async function initializeDatabase() {
 
     await promisePool.query(createSessionCookiesTable);
     console.log('Session_cookies table is ready.');
+
+    // Create tokens Table with renamed `token_key` column
+    const createTokensTable = `
+      CREATE TABLE IF NOT EXISTS tokens (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        token TEXT NOT NULL,
+        token_key VARCHAR(255) NOT NULL,
+        remain_quota INT NOT NULL,
+        expired_time INT NOT NULL,
+        unlimited_quota BOOLEAN NOT NULL,
+        model_limits_enabled BOOLEAN NOT NULL,
+        model_limits TEXT,
+        allow_ips TEXT,
+        group_name VARCHAR(255),
+        user_ip VARCHAR(45),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+
+    await promisePool.query(createTokensTable);
+    console.log('Tokens table is ready.');
   } catch (err) {
     console.error('Error initializing database tables:', err);
     process.exit(1);
@@ -130,15 +131,15 @@ async function saveSessionCookies(username, sessionCookies) {
 
 // Function to Perform Login and Retrieve Session Cookies
 async function performLogin() {
-  const loginUrl = `${process.env.REDEMPTION_API_BASE_URL}/api/user/login?turnstile=`;
+  const loginUrl = `${process.env.BASE_URL}/api/user/login?turnstile=`;
 
   const headers = {
     'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'en-US,en;q=0.9',
     'Connection': 'keep-alive',
     'Content-Type': 'application/json',
-    'Origin': process.env.REDEMPTION_API_BASE_URL,
-    'Referer': `${process.env.REDEMPTION_API_BASE_URL}/login`,
+    'Origin': process.env.BASE_URL,
+    'Referer': `${process.env.BASE_URL}/login`,
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     'VoApi-User': '-1'
   };
@@ -184,15 +185,15 @@ async function performLogin() {
 async function generateRedemptionCode(name, quota, count, sessionCookies) {
   console.log(`Using session cookies: ${sessionCookies}`); // Log the cookies being used
 
-  const url = `${process.env.REDEMPTION_API_BASE_URL}/api/redemption/`;
+  const url = `${process.env.BASE_URL}/api/redemption/`;
 
   const headers = {
     'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'en-US,en;q=0.9',
     'Connection': 'keep-alive',
     'Content-Type': 'application/json',
-    'Origin': process.env.REDEMPTION_API_BASE_URL,
-    'Referer': `${process.env.REDEMPTION_API_BASE_URL}/redemption`,
+    'Origin': process.env.BASE_URL,
+    'Referer': `${process.env.BASE_URL}/redemption`,
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     'VoApi-User': '1',
     'Cookie': sessionCookies // Use all stored cookies
@@ -238,6 +239,126 @@ async function saveRedemptionCode(codeData, name, quota, count, userIP) {
     console.log('Redemption code saved to database.');
   } catch (err) {
     console.error('Error saving redemption code to database:', err);
+    throw err;
+  }
+}
+
+// Function to Create Token
+async function createToken(name, remain_quota, expired_time, unlimited_quota, model_limits_enabled, model_limits, allow_ips, group_name, sessionCookies) {
+  console.log(`Using session cookies for token creation: ${sessionCookies}`); // Log the cookies being used
+
+  const url = `${process.env.BASE_URL}/api/token/`;
+
+  const headers = {
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8',
+    'Connection': 'keep-alive',
+    'Content-Type': 'application/json',
+    'Origin': process.env.BASE_URL,
+    'Referer': `${process.env.BASE_URL}/token`,
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    'VoApi-User': '1',
+    'Cookie': sessionCookies // Use the new session cookie
+  };
+
+  const data = {
+    name: name,
+    remain_quota: parseInt(remain_quota),
+    expired_time: parseInt(expired_time),
+    unlimited_quota: unlimited_quota,
+    model_limits_enabled: model_limits_enabled,
+    model_limits: model_limits || '',
+    allow_ips: allow_ips || '',
+    group: group_name || ''
+  };
+
+  try {
+    const response = await axios.post(url, data, {
+      headers: headers,
+      httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false }) // Equivalent to --insecure
+    });
+
+    console.log('Token creation API call successful.');
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(`Token API Error: ${JSON.stringify(error.response.data)}`);
+    } else if (error.request) {
+      throw new Error('Token API Error: No response received from the token service.');
+    } else {
+      throw new Error(`Error: ${error.message}`);
+    }
+  }
+}
+
+// Function to List Tokens
+async function listTokens(sessionCookies, p = 0, size = 100) {
+  console.log(`Listing tokens with session cookies: ${sessionCookies}`);
+
+  const url = `${process.env.BASE_URL}/api/token/?p=${p}&size=${size}`;
+
+  const headers = {
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8',
+    'Connection': 'keep-alive',
+    'Referer': `${process.env.BASE_URL}/token`,
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    'VoApi-User': '1',
+    'Cookie': sessionCookies // Use the session cookie
+  };
+
+  try {
+    const response = await axios.get(url, {
+      headers: headers,
+      httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false }) // Equivalent to --insecure
+    });
+
+    console.log('Tokens list retrieved successfully.');
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(`List Tokens API Error: ${JSON.stringify(error.response.data)}`);
+    } else if (error.request) {
+      throw new Error('List Tokens API Error: No response received from the token service.');
+    } else {
+      throw new Error(`Error: ${error.message}`);
+    }
+  }
+}
+
+// Function to Save Token to the Database with 'sk-' Prefix
+async function saveToken(tokenData, name, remain_quota, expired_time, unlimited_quota, model_limits_enabled, model_limits, allow_ips, group_name, userIP) {
+  try {
+    // Extract the 'key' from tokenData and add 'sk-' prefix
+    const key = tokenData.key ? `sk-${tokenData.key}` : null;
+
+    if (!key) {
+      throw new Error('Token key not found in the response.');
+    }
+
+    // Save the token along with its prefixed key
+    const insertQuery = `
+      INSERT INTO tokens (name, token, token_key, remain_quota, expired_time, unlimited_quota, model_limits_enabled, model_limits, allow_ips, group_name, user_ip)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const [result] = await promisePool.query(insertQuery, [
+      name,
+      JSON.stringify(tokenData), // Store the entire token data as JSON
+      key, // Prefixed key
+      parseInt(remain_quota),
+      parseInt(expired_time),
+      unlimited_quota,
+      model_limits_enabled,
+      model_limits || '',
+      allow_ips || '',
+      group_name || '',
+      userIP
+    ]);
+
+    console.log(`Token saved to database with ID: ${result.insertId} and key: ${key}`);
+  } catch (err) {
+    console.error('Error saving token to database:', err);
     throw err;
   }
 }
@@ -293,6 +414,121 @@ app.post('/api/create', [
       error: error.message
     });
   }
+});
+
+// Route: POST /api/token
+app.post('/api/token', [
+  body('name').isString().trim().notEmpty(),
+  body('remain_quota').isInt({ min: 1 }),
+  body('expired_time').isInt(), // Assuming negative values are allowed
+  body('unlimited_quota').isBoolean(),
+  body('model_limits_enabled').isBoolean(),
+  body('model_limits').optional().isString(),
+  body('allow_ips').optional().isString(),
+  body('group').optional().isString()
+], async (req, res) => {
+  // Validate Input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+
+  const {
+    name,
+    remain_quota,
+    expired_time,
+    unlimited_quota,
+    model_limits_enabled,
+    model_limits,
+    allow_ips,
+    group
+  } = req.body;
+
+  const userIP = getUserIP(req);
+  const apiKey = req.headers['x-api-key'];
+
+  // Check API Key
+  if (apiKey !== process.env.API_KEY) {
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthorized: Invalid API key'
+    });
+  }
+
+  try {
+    // Perform Login to Obtain New Session Cookies
+    console.log('Performing login to obtain new session cookies for token creation...');
+    const sessionCookies = await performLogin();
+
+    // Save the New Session Cookies to the Database with Correct Username
+    await saveSessionCookies(process.env.ADMIN_USERNAME, sessionCookies); // Use ADMIN_USERNAME instead of 'name'
+    console.log('New session cookies saved to the database.');
+
+    // Create Token Using the New Session Cookies
+    const tokenData = await createToken(
+      name,
+      remain_quota,
+      expired_time,
+      unlimited_quota,
+      model_limits_enabled,
+      model_limits,
+      allow_ips,
+      group,
+      sessionCookies
+    );
+
+    // If the token creation API does not return the 'key', fetch it using the listTokens function
+    let tokenKey = tokenData.key; // Attempt to get the key directly
+    if (!tokenKey) {
+      console.log('Token key not found in creation response. Fetching from tokens list...');
+      const tokensList = await listTokens(sessionCookies, 0, 100);
+      
+      if (tokensList.success && Array.isArray(tokensList.data) && tokensList.data.length > 0) {
+        // Assuming the latest token is the first in the list
+        const latestToken = tokensList.data[0];
+        tokenKey = latestToken.key;
+
+        if (!tokenKey) {
+          throw new Error('Token key not found in the tokens list response.');
+        }
+      } else {
+        throw new Error('Failed to retrieve tokens list or no tokens available.');
+      }
+    }
+
+    // Update the tokenData with the retrieved key and add 'sk-' prefix
+    tokenData.key = `sk-${tokenKey}`;
+
+    // Save Token to Database
+    await saveToken(
+      tokenData,
+      name,
+      remain_quota,
+      expired_time,
+      unlimited_quota,
+      model_limits_enabled,
+      model_limits,
+      allow_ips,
+      group,
+      userIP
+    );
+
+    res.json({
+      success: true,
+      data: tokenData.key // Return the 'token_key' with 'sk-' prefix
+    });
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Health Check Endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK' });
 });
 
 // Start the Server
