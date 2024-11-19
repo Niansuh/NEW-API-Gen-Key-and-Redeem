@@ -1,0 +1,21 @@
+{
+  "name": "redemption-code-generator",
+  "version": "1.0.0",
+  "description": "A redemption code generator application.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.5.2"
+  },
+  "author": "niansuh",
+  "license": "ISC"
+}
