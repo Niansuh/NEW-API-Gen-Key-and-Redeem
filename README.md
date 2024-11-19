@@ -89,10 +89,16 @@ Here is an example `cURL` command to create a redemption code by sending a POST 
 ```bash
 curl -X POST http://localhost:3000/api/create \
   -H 'Content-Type: application/json' \
-  -H 'x-api-key: sk-niansuhaiburewala521' \
+  -H 'x-api-key: sk-niansuhai' \
   -d '{
     "username": "admin",
     "name": "Test Redemption",
     "quota": 5000,
     "count": 1
   }'
+```
+
+# License
+
+This project is licensed under the terms of the [Custom License](https://github.com/Niansuh/New-API-Redeem-Code-Generator/blob/main/LICENSE.md) by **NiansuhAI**.
+
