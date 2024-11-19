@@ -504,7 +504,7 @@ Before setting up the application, ensure you have the following installed:
 
 ```bash
 
-curl -X POST https://niansuh-redeem1.hf.space/api/create \
+curl -X POST https://example.com/api/create \
 
   -H 'Content-Type: application/json' \
 
@@ -566,7 +566,7 @@ curl -X POST https://niansuh-redeem1.hf.space/api/create \
 
 ```bash
 
-curl -X POST https://niansuh-redeem1.hf.space/api/token \
+curl -X POST https://example.com/api/token \
 
   -H 'Content-Type: application/json' \
 
