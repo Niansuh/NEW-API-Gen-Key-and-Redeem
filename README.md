@@ -3,11 +3,8 @@
 
 
 ![Node.js](https://img.shields.io/badge/Node.js-v14.0.0-brightgreen)
-
 ![Express](https://img.shields.io/badge/Express-v4.17.1-blue)
-
 ![MySQL](https://img.shields.io/badge/MySQL-v5.7-orange)
-
 ![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 
