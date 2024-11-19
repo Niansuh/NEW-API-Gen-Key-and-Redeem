@@ -4,7 +4,7 @@ This is a simple API built with Node.js and Express that allows users to generat
 
 With this project, you no longer need to manually add redemption codes to your store or system. The API automates the entire process of generating and storing redemption codes, making it easier and faster to integrate with your store.
 
-# Live Demo Integration
+## Live Demo Integration
 
 This is the live demo of how we integrated the API into our app: https://pay.typegpt.net
 
