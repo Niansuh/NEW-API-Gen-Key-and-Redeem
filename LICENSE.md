@@ -1,20 +1,21 @@
-# Custom License
+MIT License
 
 Copyright (c) 2024 NiansuhAI
 
-This software is provided under the terms of the Custom License. You may use, modify, and distribute the software under the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-1. **Use**: You may use the software for personal, educational, or commercial purposes as long as you comply with the terms of this license.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-2. **Modification**: You may modify the software for internal use only. You may not distribute the modified version to third parties.
-
-3. **Redistribution**: You may not redistribute the software in any form, including modifications.
-
-4. **Proprietary Nature**: This software remains the proprietary property of NiansuhAI. All rights not expressly granted are reserved.
-
-5. **Warranty**: The software is provided "as-is", with no warranty of any kind, express or implied, including but not limited to the implied warranties of merchantability and fitness for a particular purpose.
-
-For inquiries regarding commercial licensing, please contact: contact@typegpt.net
-
----
-© 2024 NiansuhAI. All rights reserved.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
