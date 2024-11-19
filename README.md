@@ -84,7 +84,7 @@ Before setting up the application, ensure you have the following installed:
    API_KEY=your_api_key
    ADMIN_USERNAME=admin_username
    ADMIN_PASSWORD=admin_password
-   BASE_URL=http://http://127.0.0.1:4001
+   BASE_URL=http://127.0.0.1:4001
    ```
 
    **Variable Descriptions:**
@@ -98,7 +98,7 @@ Before setting up the application, ensure you have the following installed:
    - `API_KEY`: Secret key for authenticating API requests.
    - `ADMIN_USERNAME`: Username for internal API login.
    - `ADMIN_PASSWORD`: Password for internal API login.
-   - `BASE_URL`: Base URL of the internal API (e.g., `http://http://127.0.0.1:4001`).
+   - `BASE_URL`: Base URL of the internal API (e.g., `http://127.0.0.1:4001`).
 
    **Security Note:**
 
@@ -533,7 +533,7 @@ Before setting up the application, ensure you have the following installed:
 
    ADMIN_PASSWORD=admin_password
 
-   BASE_URL=http://http://127.0.0.1:4001
+   BASE_URL=http://127.0.0.1:4001
 
    ```
 
@@ -561,7 +561,7 @@ Before setting up the application, ensure you have the following installed:
 
    - `ADMIN_PASSWORD`: Password for internal API login.
 
-   - `BASE_URL`: Base URL of the internal API (e.g., `http://http://127.0.0.1:4001`).
+   - `BASE_URL`: Base URL of the internal API (e.g., `http://127.0.0.1:4001`).
 
 
 
