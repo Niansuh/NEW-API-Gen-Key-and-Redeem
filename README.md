@@ -2,6 +2,8 @@
 
 This is a simple API built with Node.js and Express that allows users to generate redemption codes. The API interacts with a MySQL database to store session cookies and redemption codes. It also logs into an external API to fetch session cookies and generate redemption codes.
 
+With this project, you no longer need to manually add redemption codes to your store or system. The API automates the entire process of generating and storing redemption codes, making it easier and faster to integrate with your store.
+
 ## Features
 
 - **Login**: Automatically logs into an external API and retrieves session cookies.
