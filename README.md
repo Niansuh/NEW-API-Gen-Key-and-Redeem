@@ -5,7 +5,7 @@
 ![MySQL](https://img.shields.io/badge/MySQL-v5.7-orange)
 ![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-**NEW-API-Gen-Key-and-Redeem** is a secure and efficient Express.js application designed to manage redemption codes and generate API keys (tokens). It interfaces with an internal API to perform user authentication, generate redemption codes, and manage tokens with standardized prefixes for easy identification. The application ensures data integrity and security through robust input validation, API key protection, and secure handling of session cookies.
+**NEW-API-Gen-Key-and-Redeem** is a secure and efficient Express.js application designed to manage redemption codes and generate API keys (tokens). It interfaces with internal APIs (new-api and vo-api) to perform user authentication, generate redemption codes, and manage tokens with standardized prefixes for easy identification. The application seamlessly integrates with your store, ensuring smooth operations and enhanced security.
 
 ## Table of Contents
 
