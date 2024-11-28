@@ -144,47 +144,6 @@ Before setting up the application, ensure you have the following installed:
     }
     ```
 
-- **Error Responses:**
-
-  - **Code:** `400 Bad Request`
-
-    - **Content:**
-
-      ```json
-      {
-        "success": false,
-        "errors": [
-          {
-            "msg": "Invalid value",
-            "param": "quota",
-            "location": "body"
-          }
-        ]
-      }
-      ```
-
-  - **Code:** `401 Unauthorized`
-
-    - **Content:**
-
-      ```json
-      {
-        "success": false,
-        "error": "Unauthorized: Invalid API key"
-      }
-      ```
-
-  - **Code:** `500 Internal Server Error`
-
-    - **Content:**
-
-      ```json
-      {
-        "success": false,
-        "error": "Error message detailing the issue"
-      }
-      ```
-
 ### Create Token
 
 - **URL:** `/api/token`
